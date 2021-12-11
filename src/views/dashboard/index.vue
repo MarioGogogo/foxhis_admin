@@ -21,93 +21,18 @@
         @collapse="collapsed = true"
         @expand="collapsed = false"
       >
-        <!-- todo:封装 logo -->
-        <div class="flex justify-center items-center p-10px">
-          <img
-            class="w-30px mr-10px"
-            src="@/assets/images/foxhis-logo.png"
-            alt="logo"
-          />
-          <span class="">Foxhis-Admin</span>
-        </div>
-        <!-- 封装 -->
-        <n-menu
-          :collapsed="collapsed"
-          :collapsed-width="64"
-          :collapsed-icon-size="20"
-          :options="menuOptions"
-          :indent="24"
-          v-model:value="activeKey"
-          @update:value="clickMenuItem"
-        />
+        <!-- 封装 logo -->
+        <LayoutLogo :collapsed="collapsed" />
+        <!-- 封装侧边栏 -->
+        <SliderMenu :collapsed="collapsed" />
       </n-layout-sider>
-      <!-- 侧边内容区域 -->
-      <n-layout>
+      <!-- 内容区域 -->
+      <n-layout :inverted="inverted">
         <!-- 头部菜单 -->
-        <div
-          class="layout-header flex justify-between items-center p-14px shadow-md"
-        >
-          <div class="layout-header-left flex justify-between items-center">
-            <n-icon size="20" class="hover:cursor-pointer">
-              <OptionsSharpIcon />
-            </n-icon>
-            <n-icon size="20" class="mx-12px hover:cursor-pointer">
-              <RefreshIcon />
-            </n-icon>
-            <n-breadcrumb class="mx-12px hover:cursor-pointer">
-              <n-breadcrumb-item>
-                <n-dropdown :options="options1">Dashboard</n-dropdown>
-              </n-breadcrumb-item>
-              <n-breadcrumb-item> 主控台 </n-breadcrumb-item>
-            </n-breadcrumb>
-          </div>
-          <div class="layout-header-right flex justify-between items-center">
-            <n-icon size="20" class="mx-12px hover:cursor-pointer">
-              <SearchOutlineIcon />
-            </n-icon>
-            <n-icon size="20" class="mx-12px hover:cursor-pointer">
-              <LogoOctocatIcon />
-            </n-icon>
-            <n-icon size="20" class="mx-12px hover:cursor-pointer">
-              <LockOpenOutlineIcon />
-            </n-icon>
-            <n-icon size="20" class="mx-12px hover:cursor-pointer">
-              <ExpandIcon />
-            </n-icon>
-            <n-badge value="99+" class="mx-12px hover:cursor-pointer">
-              <n-icon size="20">
-                <NotificationsOutlineIcon />
-              </n-icon>
-            </n-badge>
-            <n-avatar
-              class="mx-12px hover:cursor-pointer"
-              round
-              size="small"
-              src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
-            />
-            <n-icon size="20" class="mx-12px hover:cursor-pointer">
-              <SettingsOutlineIcon />
-            </n-icon>
-          </div>
-        </div>
+        <LayoutHead :inverted="inverted" v-model:collapsed="collapsed" />
         <!-- 底部tab内容 -->
         <div class="layout-tabs">
-          <n-tabs
-            v-model:value="nameRef"
-            type="card"
-            closable
-            @close="handleClose"
-            tab-style="min-width: 80px;"
-          >
-            <n-tab-pane
-              v-for="panel in panelsRef"
-              :key="panel"
-              :tab="panel.toString()"
-              :name="panel"
-            >
-              {{ panel }}
-            </n-tab-pane>
-          </n-tabs>
+          <TabsView />
         </div>
         <div class="wrapper">
           <RouterView />
@@ -118,88 +43,49 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, h, ref } from 'vue'
-import {
-  NSwitch,
-  NSpace,
-  NMenu,
-  NLayout,
-  NLayoutSider,
-  NBreadcrumb,
-  NBreadcrumbItem,
-  NDropdown,
-  NIcon,
-  NAvatar,
-  NBadge,
-  NTabs,
-  NTabPane,
-} from 'naive-ui'
-import {
-  GameControllerOutline,
-  Expand as ExpandIcon,
-  SearchOutline as SearchOutlineIcon,
-  Refresh as RefreshIcon,
-  OptionsSharp as OptionsSharpIcon,
-  LockOpenOutline as LockOpenOutlineIcon,
-  LogoOctocat as LogoOctocatIcon,
-  SettingsOutline as SettingsOutlineIcon,
-  NotificationsOutline as NotificationsOutlineIcon,
-} from '@vicons/ionicons5'
+import { defineComponent, h, ref, onMounted, watch, computed } from 'vue'
+import { NSpace, NLayout, NLayoutSider } from 'naive-ui'
 import { useRoute, useRouter, RouterView } from 'vue-router'
-import { menuOptions } from '@/mockData/menuOptions'
-const activeKey = ref(null)
-const collapsed = ref(false)
+import {
+  LayoutLogo,
+  SliderMenu,
+  TabsView,
+  LayoutHead,
+} from '@/components/Layout'
+import { useTabsStore } from '@/store'
+//是否折叠// 菜单是否折叠 模式 false 不折叠
+const collapsed = ref<boolean>(false)
+//切换暗黑模式
+const inverted = ref(false)
+
 // 当前路由
 const currentRoute = useRoute()
+//当前点击的侧边栏标签 组件 vmodel 双向绑定
+const getCurrentSliderItem = computed(() => {
+  return {
+    label: '主控台',
+    key: ' console',
+  }
+})
 const router = useRouter()
-const options1 = [
-  {
-    label: 'David Tao',
-    key: 1,
-  },
-  {
-    label: '黑色柳丁',
-    key: 2,
-  },
-]
+const tabsStore = useTabsStore()
 
-const nameRef = ref(1)
-const panelsRef = ref([1, 2, 3, 4, 5, 6, 7])
-const handleClose = (name: number) => {
-  const { value: panels } = panelsRef
-  if (panels.length === 1) {
-    console.log(
-      '%c 🥚 最后一个了: ',
-      'font-size:20px;background-color: #42b983;color:#fff;'
-    )
-    return
-  }
+onMounted(() => {
+  //判断当前 tabs 是否有值
   console.log(
-    '%c 🥚 最后一个了: ',
-    'font-size:20px;background-color: #42b983;color:#fff;',
-    name
+    '%c 🍲 currentRoute.path: ',
+    'font-size:20px;background-color: #EA7E5C;color:#fff;',
+    currentRoute.path
   )
-  const index = panels.findIndex((v) => name === v)
-  panels.splice(index, 1)
-  if (nameRef.value === name) {
-    nameRef.value = panels[index]
+  if (currentRoute.path === '/dashboard/console') {
+    tabsStore.addTabs({
+      route: currentRoute.path,
+      name: currentRoute.meta.title,
+      label: 'console',
+    })
+    tabsStore.setActiveIndex(currentRoute.path as string)
   }
-}
-
-interface MenuOption {
-  name: string
-  id: Number
-}
-// 点击菜单
-const clickMenuItem = (key: string, item: any) => {
-  console.log(
-    '%c 🍖 key: ',
-    'font-size:20px;background-color: #FFDD4D;color:#fff;',
-    key,
-    item
-  )
-  router.push({ name: key })
-}
+})
 </script>
 
 <style lang="scss" scoped></style>

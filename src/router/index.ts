@@ -24,6 +24,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'dashboard',
         path: '/dashboard',
+        redirect: '/dashboard/console',
         meta: {
           title: '控制台',
         },
@@ -40,11 +41,17 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'workbench',
         path: '/dashboard/workbench',
+        meta: {
+          title: '工作台',
+        },
         component: () => import('@views/workbench/index.vue'),
       },
       {
         name: 'about',
         path: '/about', //默认缺省值
+        meta: {
+          title: '关于',
+        },
         component: () => import('@views/about/index.vue'),
       },
     ],

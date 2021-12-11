@@ -1,5 +1,5 @@
 import useThemeStore from './theme'
 // import useAppStore from './app'
 // import useAuthStore from './auth'
-
-export { useThemeStore }
+import useTabsStore from './tabs'
+export { useThemeStore, useTabsStore }
