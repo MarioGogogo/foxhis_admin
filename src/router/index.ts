@@ -44,7 +44,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '工作台',
         },
-        component: () => import('@views/workbench/index.vue'),
+        component: () => import('@views/dashboard/workbench/index.vue'),
       },
       {
         name: 'about',
