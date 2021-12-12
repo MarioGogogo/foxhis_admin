@@ -27,15 +27,17 @@
         <SliderMenu :collapsed="collapsed" />
       </n-layout-sider>
       <!-- 内容区域 -->
-      <n-layout :inverted="inverted">
+      <n-layout :inverted="inverted" class="flex-col flex-auto">
         <!-- 头部菜单 -->
         <LayoutHead :inverted="inverted" v-model:collapsed="collapsed" />
         <!-- 底部tab内容 -->
         <div class="layout-tabs">
           <TabsView />
         </div>
-        <div class="wrapper">
-          <RouterView />
+        <div class="wrapper overflow-hidden" style="background-color: #f5f7f9">
+          <keep-alive>
+            <RouterView />
+          </keep-alive>
         </div>
       </n-layout>
     </n-layout>
@@ -71,21 +73,32 @@ const router = useRouter()
 const tabsStore = useTabsStore()
 
 onMounted(() => {
-  //判断当前 tabs 是否有值
-  console.log(
-    '%c 🍲 currentRoute.path: ',
-    'font-size:20px;background-color: #EA7E5C;color:#fff;',
-    currentRoute.path
-  )
-  if (currentRoute.path === '/dashboard/console') {
-    tabsStore.addTabs({
-      route: currentRoute.path,
-      name: currentRoute.meta.title,
-      label: 'console',
-    })
-    tabsStore.setActiveIndex(currentRoute.path as string)
-  }
+  //查看缓存 initDataTabs
+  cacheInitTabs()
 })
+
+const cacheInitTabs = () => {
+  let tabs = localStorage.getItem('TABS-ROUTER')
+  if (tabs == null) {
+    if (currentRoute.path === '/dashboard/console') {
+      tabsStore.addTabs({
+        route: currentRoute.path,
+        name: currentRoute.meta.title,
+        label: 'console',
+      })
+      tabsStore.setActiveIndex(currentRoute.path as string)
+    }
+  } else {
+    const { value } = JSON.parse(tabs)
+    Array.from(value).forEach((item) => {
+      tabsStore.addTabs({
+        route: item.route,
+        name: item.name,
+        label: item.label,
+      })
+    })
+  }
+}
 </script>
 
 <style lang="scss" scoped></style>

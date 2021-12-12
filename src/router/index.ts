@@ -54,6 +54,30 @@ const routes: RouteRecordRaw[] = [
         },
         component: () => import('@views/about/index.vue'),
       },
+      {
+        name: '403',
+        path: '/error/403', //默认缺省值
+        meta: {
+          title: '403页面',
+        },
+        component: () => import('@views/error/403.vue'),
+      },
+      {
+        name: '404',
+        path: '/error/404', //默认缺省值
+        meta: {
+          title: '404页面',
+        },
+        component: () => import('@views/error/404.vue'),
+      },
+      {
+        name: '500',
+        path: '/error/500', //默认缺省值
+        meta: {
+          title: '500页面',
+        },
+        component: () => import('@views/error/500.vue'),
+      },
     ],
   },
   // {

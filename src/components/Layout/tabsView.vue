@@ -1,29 +1,35 @@
 <template>
   <div class="layout-tabs flex items-center justify-between overflow-hidden">
-    <n-icon
-      size="20"
-      v-if="false"
-      class="tabs-scroll-prev mx-12px hover:cursor-pointer"
-    >
-      <ChevronBackCircleOutlineIcon />
-    </n-icon>
-    <div class="tabs-scroll-middle flex flex-auto overflow-x-scroll">
+    <div class="w-32px h-32px flex justify-center items-center bg-white">
+      <n-icon
+        size="20"
+        v-if="true"
+        class="tabs-scroll-prev hover:cursor-pointer"
+      >
+        <ChevronBackCircleOutlineIcon />
+      </n-icon>
+    </div>
+
+    <div class="tabs-scroll-middle overflow-x-scroll">
       <div
-        v-for="panel in panelsRef"
-        class="flex items-center flex-nowrap ml-6px w-100px bg-white rounded-4px mt-10px shadow-md :hover:cursor-pointer"
+        v-for="(panel, index) in panelsRef"
+        :key="index"
+        class="tab-mid-item flex items-center flex-nowrap ml-6px bg-white rounded-3px shadow-md cursor-pointer"
         @contextmenu="handleContextMenu"
+        :class="{ width: panel.label != 'console' ? 'w-90px' : 'w-100px' }"
       >
         <p
           class="text-black flex-auto whitespace-nowrap text-base-14px flex-nowrap px-16px py-10px"
           :class="{ active: panel.label === nameRef }"
+          @click="handleTabClick(panel)"
         >
           {{ panel.name }}
         </p>
         <n-icon
           v-if="panel.label != 'console'"
+          class="mr-8px"
           size="20"
-          class="justify-end"
-          @click="handleClose"
+          @click="handleClose(index)"
         >
           <CloseOutlineIcon />
         </n-icon>
@@ -39,38 +45,19 @@
         :on-clickoutside="onClickoutside"
       />
     </div>
-    <n-icon
-      size="20"
-      v-if="false"
-      class="tabs-scroll-next mx-12px hover:cursor-pointer"
-    >
-      <ChevronForwardCircleOutlineIcon />
-    </n-icon>
+    <div class="w-32px h-32px flex justify-center items-center bg-white">
+      <n-icon size="20" class="tabs-scroll-next mx-12px hover:cursor-pointer">
+        <ChevronForwardCircleOutlineIcon />
+      </n-icon>
+    </div>
   </div>
-
-  <!-- <n-tabs
-    v-model:value="nameRef"
-    type="card"
-    closable
-    @close="handleClose"
-    @update:value="handleTabClick"
-    tab-style="min-width: 80px; background-color:#fff;border:none"
-  >
-    <n-tab-pane
-      v-for="panel in panelsRef"
-      :key="panel"
-      :tab="panel.name"
-      :name="panel.label"
-    >
-    </n-tab-pane>
-  </n-tabs> -->
 </template>
 
 <script lang="ts" setup>
 import { NTabs, NIcon, NTabPane, NDropdown, NScrollbar } from 'naive-ui'
-import { defineProps, ref, watch, computed, nextTick, h } from 'vue'
+import { ref, watch, computed, nextTick, h } from 'vue'
 import { useTabsStore } from '@/store'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import {
   Cog as CogIcon,
   WineOutline as WineIcon,
@@ -124,6 +111,8 @@ const panelsRef = computed(() => tabsStore.openTab)
 
 // 当前路由
 const currentRoute = useRoute()
+const router = useRouter()
+
 const handleSelect = (value) => {
   console.log(
     '%c 🥦 value: ',
@@ -141,6 +130,7 @@ const handleContextMenu = (e) => {
     yRef.value = e.clientY
   })
 }
+// 点击外面元素关闭
 const onClickoutside = (e) => {
   showDropdownRef.value = false
 }
@@ -151,23 +141,21 @@ watch(
     console.log(currQuery, '********', oldQuery)
     //判断点击是tabs 有的标签则直接跳转刷新
     nameRef.value = currRoute as string
+    tabsStore.setActiveIndex(currentRoute.path)
     //不存在 tabs 中 则增加 tabs 并路由跳转
     let flag = false
     for (let item of tabsStore.openTab) {
       if (item.label === currRoute) {
-        tabsStore.setActiveIndex(currentRoute.path)
         flag = true
         break
       }
     }
-
     if (!flag) {
       tabsStore.addTabs({
         route: currentRoute.path,
         name: currentRoute.meta.title,
         label: currRoute,
       })
-      tabsStore.setActiveIndex(currentRoute.path as string)
     }
 
     console.log(
@@ -178,32 +166,27 @@ watch(
   }
 )
 // 点击 tabs
-const handleTabClick = (value) => {
-  console.log(
-    '%c 🍔 handleTabClick: ',
-    'font-size:20px;background-color: #ED9EC7;color:#fff;',
-    value
-  )
+const handleTabClick = (type) => {
+  router.push({ path: type.route })
 }
 // 关闭 tabs
-const handleClose = (name: number) => {
+const handleClose = (index: number) => {
   const { value: panels } = panelsRef
-  if (panels.length === 1) {
-    console.log(
-      '%c 🥚 最后一个了: ',
-      'font-size:20px;background-color: #42b983;color:#fff;'
-    )
-    return
-  }
-  console.log(
-    '%c 🥚 最后一个了: ',
-    'font-size:20px;background-color: #42b983;color:#fff;',
-    name
-  )
-  const index = panels.findIndex((v) => name === v)
-  panels.splice(index, 1)
+  if (panels.length === 1) return
+  const name = panels[index].label
+  const route = panels[index].route
+  //全局状态删除
+  tabsStore.deleteTabs(route)
+  // panels.splice(index, 1)
+  //如果删除是激活页面则自动激活前一个页面
   if (nameRef.value === name) {
-    nameRef.value = panels[index]
+    if (index === panels.length) {
+      nameRef.value = panels[index - 1].label
+      tabsStore.setActiveIndex(panels[index - 1].route as string)
+      handleTabClick(panels[index - 1])
+    } else {
+      nameRef.value = panels[index].label
+    }
   }
 }
 </script>
@@ -211,11 +194,22 @@ const handleClose = (name: number) => {
 <style lang="scss" scoped>
 .layout-tabs {
   background-color: #f5f7f9;
-  padding: 0px 19px 0px 10px;
+  padding: 6px 19px 6px 10px;
+}
+.tabs-scroll-middle {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+
+  &::-webkit-scrollbar {
+    height: 0 !important;
+  }
 }
 .tabs-scroll-middle p.active {
   color: #18a058;
 }
+
 :deep(.n-tabs .n-tabs-nav.n-tabs-nav--card-type .n-tabs-pad) {
   border-bottom: none;
 }
