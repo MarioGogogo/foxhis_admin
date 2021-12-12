@@ -1,5 +1,5 @@
 <template>
-  <n-space :vertical="true" :size="16" class="px-10px">
+  <n-space :vertical="true" :size="16" class="px-10px pb-10px">
     <top-chart />
     <data-card />
     <BottomPart />

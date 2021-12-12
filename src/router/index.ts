@@ -16,9 +16,9 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     name: 'home',
     meta: {
-      title: '首页',
+      title: 'Dashboard',
     },
-    component: () => import('@views/dashboard/index.vue'),
+    component: () => import('@views/home/index.vue'),
     redirect: '/dashboard',
     children: [
       {

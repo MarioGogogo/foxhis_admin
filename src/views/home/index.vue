@@ -34,10 +34,10 @@
         <div class="layout-tabs">
           <TabsView />
         </div>
-        <div class="wrapper overflow-hidden" style="background-color: #f5f7f9">
+        <div class="wrapper flex-auto" style="background-color: #f5f7f9">
           <transition :name="transitionName">
             <keep-alive>
-              <RouterView />
+              <router-view></router-view>
             </keep-alive>
           </transition>
         </div>
@@ -81,7 +81,6 @@ const getCurrentSliderItem = computed(() => {
     key: ' console',
   }
 })
-const router = useRouter()
 const tabsStore = useTabsStore()
 
 onMounted(() => {

@@ -11,7 +11,7 @@
         <n-breadcrumb-item>
           <n-dropdown :options="options1">Dashboard</n-dropdown>
         </n-breadcrumb-item>
-        <n-breadcrumb-item> 主控台 </n-breadcrumb-item>
+        <n-breadcrumb-item>{{ $route.meta.title }} </n-breadcrumb-item>
       </n-breadcrumb>
     </div>
     <div class="layout-header-right flex justify-between items-center">
@@ -54,7 +54,7 @@ import {
   NAvatar,
   NDropdown,
 } from 'naive-ui'
-import { defineProps, ref, defineEmits } from 'vue'
+import { ref, defineEmits, computed } from 'vue'
 import {
   GameControllerOutline,
   Expand as ExpandIcon,
@@ -66,6 +66,7 @@ import {
   SettingsOutline as SettingsOutlineIcon,
   NotificationsOutline as NotificationsOutlineIcon,
 } from '@vicons/ionicons5'
+import { useTabsStore } from '@/store'
 const props = defineProps({
   collapsed: {
     type: Boolean,
@@ -73,6 +74,9 @@ const props = defineProps({
     default: false,
   },
 })
+const tabsStore = useTabsStore
+const breadcrumb_parent = computed(() => tabsStore.breadcrumb_parent)
+const breadcrumb_child = computed(() => tabsStore.breadcrumb_child)
 
 // 头部面包屑数据
 const options1 = [

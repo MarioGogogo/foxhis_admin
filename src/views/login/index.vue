@@ -34,6 +34,7 @@
           <h3 class="text-16px text-primary font-medium pb-10px">
             {{ activeModule.label }}
           </h3>
+
           <component :is="activeModule.component" />
         </main>
       </n-card>

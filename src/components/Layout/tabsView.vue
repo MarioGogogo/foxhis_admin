@@ -67,7 +67,7 @@ import {
   ChevronBackCircleOutline as ChevronBackCircleOutlineIcon,
   ChevronForwardCircleOutline as ChevronForwardCircleOutlineIcon,
 } from '@vicons/ionicons5'
-
+import { findParentRouteName } from '@/utils/router/index'
 const props = defineProps({
   collapsed: {
     type: Boolean,
@@ -139,6 +139,7 @@ watch(
   ([currRoute, currQuery], [fromRoute, oldQuery]) => {
     console.log(currRoute, '--', fromRoute)
     console.log(currQuery, '********', oldQuery)
+    findParentRouteName(currentRoute.path)
     //判断点击是tabs 有的标签则直接跳转刷新
     nameRef.value = currRoute as string
     tabsStore.setActiveIndex(currentRoute.path)
