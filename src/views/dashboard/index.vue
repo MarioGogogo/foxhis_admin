@@ -35,9 +35,11 @@
           <TabsView />
         </div>
         <div class="wrapper overflow-hidden" style="background-color: #f5f7f9">
-          <keep-alive>
-            <RouterView />
-          </keep-alive>
+          <transition :name="transitionName">
+            <keep-alive>
+              <RouterView />
+            </keep-alive>
+          </transition>
         </div>
       </n-layout>
     </n-layout>
@@ -45,7 +47,15 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, h, ref, onMounted, watch, computed } from 'vue'
+import {
+  defineComponent,
+  h,
+  ref,
+  onMounted,
+  watch,
+  computed,
+  Transition,
+} from 'vue'
 import { NSpace, NLayout, NLayoutSider } from 'naive-ui'
 import { useRoute, useRouter, RouterView } from 'vue-router'
 import {
@@ -55,6 +65,8 @@ import {
   LayoutHead,
 } from '@/components/Layout'
 import { useTabsStore } from '@/store'
+
+const transitionName = ref('fold-left')
 //是否折叠// 菜单是否折叠 模式 false 不折叠
 const collapsed = ref<boolean>(false)
 //切换暗黑模式
@@ -101,4 +113,18 @@ const cacheInitTabs = () => {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+// todo:表格过度动画
+.fold-left-leave-active,
+.fold-left-enter-active {
+  transition: all 0.5s;
+}
+.fold-left-enter-from {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+.fold-left-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+</style>
