@@ -24,7 +24,7 @@
       <n-icon size="20" class="mx-12px hover:cursor-pointer">
         <LockOpenOutlineIcon />
       </n-icon>
-      <n-icon size="20" class="mx-12px hover:cursor-pointer">
+      <n-icon size="20" class="mx-12px hover:cursor-pointer" @click="toggle">
         <ExpandIcon />
       </n-icon>
       <n-badge value="99+" class="mx-12px hover:cursor-pointer">
@@ -67,6 +67,8 @@ import {
   NotificationsOutline as NotificationsOutlineIcon,
 } from '@vicons/ionicons5'
 import { useTabsStore } from '@/store'
+import { useFullscreen } from '@vueuse/core'
+const { isFullscreen, toggle } = useFullscreen()
 const props = defineProps({
   collapsed: {
     type: Boolean,
