@@ -3,6 +3,7 @@
     <n-grid-item span="s:24 m:16">
       <n-card :bordered="false" class="rounded-16px shadow-sm">
         <div class="flex w-full h-360px">
+          <!-- 侧边动态图表动态数字 -->
           <div class="w-200px h-full py-12px">
             <h3 class="text-16px font-bold">Dashboard</h3>
             <p class="text-[#aaa]">Overview Of Lasted Month</p>
@@ -18,8 +19,8 @@
               >Last Month Summary</n-button
             >
           </div>
-          <div class="flex-1-hidden h-full">
-            <div ref="lineRef" class="wh-full"></div>
+          <div class="flex-1">
+            <div ref="lineRef" class="h-full"></div>
           </div>
         </div>
       </n-card>
@@ -68,7 +69,9 @@ function renderLineChart() {
   })
   line.value.render()
 }
-function renderPieChart() {
+
+//渲染饼状图
+const renderPieChart = () => {
   const data = [
     { type: '学习', value: 20 },
     { type: '娱乐', value: 10 },
