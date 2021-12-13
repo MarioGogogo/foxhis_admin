@@ -5,8 +5,7 @@ const useTabsStore = defineStore({
   state: () => ({
     openTab: [],
     activeIndex: 'console',
-    breadcrumb_parent: '',
-    breadcrumb_child: '',
+    activeMenu: { p: '', c: '' },
   }),
   // Pinia 中的 getter 与 Vuex 中的 getter 、组件中的计算属性具有相同的功能
   getters: {
@@ -21,6 +20,9 @@ const useTabsStore = defineStore({
         value: this.openTab,
         activeTab: this.getActiveIndex,
       })
+    },
+    setActiveMenu(p, c) {
+      this.activeMenu = { p: p, c: c }
     },
     deleteTabs(route: any) {
       let index = 0

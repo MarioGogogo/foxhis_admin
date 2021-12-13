@@ -113,14 +113,9 @@ const panelsRef = computed(() => tabsStore.openTab)
 const currentRoute = useRoute()
 const router = useRouter()
 
-const handleSelect = (value) => {
-  console.log(
-    '%c 🥦 value: ',
-    'font-size:20px;background-color: #EA7E5C;color:#fff;',
-    value
-  )
-}
-
+//右键点击
+const handleSelect = (value) => {}
+// 启动右键
 const handleContextMenu = (e) => {
   e.preventDefault()
   showDropdownRef.value = false
@@ -134,15 +129,35 @@ const handleContextMenu = (e) => {
 const onClickoutside = (e) => {
   showDropdownRef.value = false
 }
+
+const getRoutePathToState = (path) => {
+  if (path.indexOf('/') > -1) {
+    const arr = path.split('/')
+    tabsStore.setActiveMenu(arr[1], arr[2])
+    console.log(
+      '%c 🍝 arr: ',
+      'font-size:20px;background-color: #EA7E5C;color:#fff;',
+      arr
+    )
+  }
+}
+
 watch(
   [() => currentRoute.name, () => currentRoute.params],
   ([currRoute, currQuery], [fromRoute, oldQuery]) => {
+    console.log(
+      '%c 🍅 路由改变了要记录值了: ',
+      'font-size:20px;background-color: #ED9EC7;color:#fff;',
+      currentRoute
+    )
+    getRoutePathToState(currentRoute.path)
+    //记录 acitve 值和改变 slide 侧边栏展开的默认值
     console.log(currRoute, '--', fromRoute)
-    console.log(currQuery, '********', oldQuery)
+    // console.log(currQuery, '********', oldQuery)
     findParentRouteName(currentRoute.path)
     //判断点击是tabs 有的标签则直接跳转刷新
     nameRef.value = currRoute as string
-    tabsStore.setActiveIndex(currentRoute.path)
+
     //不存在 tabs 中 则增加 tabs 并路由跳转
     let flag = false
     for (let item of tabsStore.openTab) {

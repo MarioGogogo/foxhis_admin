@@ -20,7 +20,7 @@ function renderIcon(icon) {
 export const menuOptions = [
   {
     label: 'Dashboard',
-    key: 'Dashboard',
+    key: 'dashboard',
     icon: renderIcon(DashboardIcon),
     children: [
       {

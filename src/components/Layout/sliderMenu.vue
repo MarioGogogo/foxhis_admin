@@ -6,15 +6,17 @@
     :options="menuOptions"
     :indent="24"
     v-model:value="activeKey"
+    :default-expanded-keys="defaultExpandedKeys"
     @update:value="clickMenuItem"
+    accordion
   />
 </template>
 
 <script lang="ts" setup>
-import { NMenu } from 'naive-ui'
-import { defineProps, ref, defineEmits } from 'vue'
+import { c, NMenu } from 'naive-ui'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter, RouterView } from 'vue-router'
-
+import { useTabsStore } from '@/store'
 import { menuOptions } from '@/mockData/menuOptions'
 const props = defineProps({
   collapsed: {
@@ -23,8 +25,11 @@ const props = defineProps({
     default: false,
   },
 })
+const tabsStore = useTabsStore()
 const router = useRouter()
-const activeKey = ref(null)
+const defaultExpandedKeys = computed(() => tabsStore.activeMenu.p)
+
+const activeKey = computed(() => tabsStore.activeMenu.c)
 
 interface MenuOption {
   name: string

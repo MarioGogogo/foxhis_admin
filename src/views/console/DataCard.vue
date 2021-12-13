@@ -8,7 +8,10 @@
       >
         <h3 class="text-16px">{{ item.title }}</h3>
         <div class="flex justify-between pt-12px">
-          <Icon :icon="item.icon" class="text-32px" />
+          <n-icon class="mr-8px" size="30">
+            <CogIcon />
+          </n-icon>
+          <!-- <Icon :icon="item.icon" class="text-32px" /> -->
           <count-to
             :prefix="item.unit"
             :start-value="1"
@@ -22,7 +25,8 @@
 </template>
 
 <script setup lang="ts">
-import { NGrid, NGridItem } from 'naive-ui'
+import { Cog as CogIcon } from '@vicons/ionicons5'
+import { NGrid, NGridItem, NIcon } from 'naive-ui'
 import CountTo from '@/components/CountTo/index.vue'
 import GradientBg from '@/components/GradientBg/index.vue'
 interface CardData {
