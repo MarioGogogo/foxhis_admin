@@ -9,7 +9,7 @@
                 <n-avatar circle :size="64" :src="adminIcon" />
               </div>
               <div>
-                <p class="px-4 text-xl">早安，Admin，开始您一天的工作吧！</p>
+                <p class="px-4 text-xl">早安，Foxhis，开始您一天的工作吧！</p>
                 <p class="px-4 text-gray-400 mt-10px">
                   今日多云⛅️，15℃ - 25℃，祝您有个好心情! 🎉。
                 </p>
