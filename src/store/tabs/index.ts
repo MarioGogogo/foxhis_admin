@@ -30,14 +30,7 @@ const useTabsStore = defineStore({
       })
     },
 
-    deleteTabs(route: any) {
-      let index = 0
-      for (let gohh of this.openTab) {
-        if (gohh.route === route) {
-          break
-        }
-        index++
-      }
+    deleteTabs(index: any) {
       this.openTab.splice(index, 1)
       //缓存
       useLocalStorage('TABS-ROUTER', {

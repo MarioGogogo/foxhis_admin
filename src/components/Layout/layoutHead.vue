@@ -4,14 +4,30 @@
       <n-icon size="20" class="hover:cursor-pointer" @click="handleCollapsed">
         <OptionsSharpIcon />
       </n-icon>
-      <n-icon size="20" class="mx-12px hover:cursor-pointer">
+      <n-icon
+        size="20"
+        class="mx-12px hover:cursor-pointer"
+        @click="handleReloadPage"
+      >
         <RefreshIcon />
       </n-icon>
-      <n-breadcrumb class="mx-12px hover:cursor-pointer">
-        <n-breadcrumb-item>
-          <n-dropdown :options="options1">Dashboard</n-dropdown>
-        </n-breadcrumb-item>
-        <n-breadcrumb-item>{{ $route.meta.title }} </n-breadcrumb-item>
+      <!-- 面包屑 -->
+      <n-breadcrumb>
+        <template v-for="routeItem in breadcrumbList" :key="routeItem.name">
+          <n-breadcrumb-item>
+            <n-dropdown
+              v-if="routeItem.children.length"
+              :options="routeItem.children"
+            >
+              <span class="link-text">
+                {{ routeItem.meta.title }}
+              </span>
+            </n-dropdown>
+            <span class="link-text" v-else>
+              {{ routeItem.meta.title }}
+            </span>
+          </n-breadcrumb-item>
+        </template>
       </n-breadcrumb>
     </div>
     <!-- 右侧 -->
@@ -103,12 +119,23 @@
         <span>全屏</span>
       </n-tooltip>
 
-      <n-avatar
-        class="mx-12px hover:cursor-pointer"
-        round
-        size="small"
-        src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
-      />
+      <!-- 个人中心 -->
+      <div class="layout-header-trigger layout-header-trigger-min">
+        <n-dropdown
+          trigger="hover"
+          @select="avatarSelect"
+          :options="avatarOptions"
+        >
+          <div class="avatar">
+            <n-avatar round>
+              {{ username }}
+              <template #icon>
+                <UserOutlinedIcon />
+              </template>
+            </n-avatar>
+          </div>
+        </n-dropdown>
+      </div>
       <n-icon size="20" class="mx-12px hover:cursor-pointer">
         <SettingsOutlineIcon />
       </n-icon>
@@ -117,6 +144,7 @@
 </template>
 
 <script lang="ts" setup>
+import { UserOutlined as UserOutlinedIcon } from '@vicons/antd'
 import {
   NDivider,
   NIcon,
@@ -132,7 +160,7 @@ import {
   NTag,
   NListItem,
 } from 'naive-ui'
-import { ref, defineEmits, computed } from 'vue'
+import { ref, defineEmits, computed, unref } from 'vue'
 import {
   GameControllerOutline,
   Expand as ExpandIcon,
@@ -146,6 +174,7 @@ import {
 } from '@vicons/ionicons5'
 import { useTabsStore } from '@/store'
 import { useFullscreen } from '@vueuse/core'
+import { useRoute, useRouter } from 'vue-router'
 const { isFullscreen, toggle } = useFullscreen()
 const props = defineProps({
   collapsed: {
@@ -154,9 +183,15 @@ const props = defineProps({
     default: false,
   },
 })
+const router = useRouter()
+const route = useRoute()
+console.log(
+  '%c 🍢 route: ',
+  'font-size:20px;background-color: #FFDD4D;color:#fff;',
+  route
+)
+const username = ref('Admin')
 const tabsStore = useTabsStore
-const breadcrumb_parent = computed(() => tabsStore.breadcrumb_parent)
-const breadcrumb_child = computed(() => tabsStore.breadcrumb_child)
 
 const isReacMsg = ref(false)
 // 头部面包屑数据
@@ -170,11 +205,62 @@ const options1 = [
     key: 2,
   },
 ]
-const emit = defineEmits(['update'])
+// 头像设置
+const avatarOptions = [
+  {
+    label: '个人设置',
+    key: 1,
+  },
+  {
+    label: '退出登录',
+    key: 2,
+  },
+]
+//头像下拉菜单
+const avatarSelect = (key) => {
+  switch (key) {
+    case 1:
+      router.push({ name: 'Setting' })
+      break
+    case 2:
+      // doLogout()
+      break
+  }
+}
+const generator: any = (routerMap) => {
+  return routerMap.map((item) => {
+    const currentMenu = {
+      ...item,
+      label: item.meta.title,
+      key: item.name,
+      disabled: item.path === '/',
+    }
+    // 是否有子菜单，并递归处理
+    if (item.children && item.children.length > 0) {
+      // Recursion
+      currentMenu.children = generator(item.children, currentMenu)
+    }
+    return currentMenu
+  })
+}
+const breadcrumbList = computed(() => {
+  return generator(route.matched)
+})
+console.log(
+  '%c 🥐 breadcrumbList: ',
+  'font-size:20px;background-color: #465975;color:#fff;',
+  breadcrumbList
+)
 
+const emit = defineEmits(['update'])
 // 折叠方式
 const handleCollapsed = () => {
   emit('update:collapsed', !props.collapsed)
+}
+
+// 刷新页面
+const handleReloadPage = () => {
+  router.go(0)
 }
 </script>
 

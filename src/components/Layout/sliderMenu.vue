@@ -62,11 +62,7 @@ watch(
     const matched = currentRoute.matched
     const arr = matched[1].path.split('/')
     state.openKeys = [arr[1], arr[2]]
-    console.log(
-      '%c 🥥 state.openKeys: ',
-      'font-size:20px;background-color: #6EC1C2;color:#fff;',
-      state.openKeys
-    )
+
     const activeMenu: string = (currentRoute.meta?.activeMenu as string) || ''
     selectedKeys.value = activeMenu
       ? (activeMenu as string)

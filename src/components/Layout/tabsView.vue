@@ -159,37 +159,20 @@ watch(
 )
 // 点击 tabs
 const handleTabClick = (type) => {
-  console.log(
-    '%c 🥠 type: ',
-    'font-size:20px;background-color: #2EAFB0;color:#fff;',
-    type
-  )
   router.push({ name: type.label })
 }
 // 关闭 tabs
 const handleRmoveTab = (index: number) => {
-  console.log(
-    '%c 🍅 index: ',
-    'font-size:20px;background-color: #FCA650;color:#fff;',
-    index
-  )
   const { value: panels } = panelsRef
-  if (panels.length === 1) return
   const name = panels[index].label
   const route = panels[index].route
-  //fix:删除之后没有及时跳转
   //全局状态删除
-  tabsStore.deleteTabs(route)
-  // panels.splice(index, 1)
-  //如果删除是激活页面则自动激活前一个页面
+  tabsStore.deleteTabs(index)
+  //fix:删除之后没有及时跳转
   if (nameRef.value === name) {
-    if (index === panels.length) {
-      nameRef.value = panels[index - 1].label
-      tabsStore.setActiveIndex(panels[index - 1].route as string)
-      handleTabClick(panels[index - 1])
-    } else {
-      nameRef.value = panels[index].label
-    }
+    nameRef.value = panels[panels.length - 1].label
+    tabsStore.setActiveIndex(panels[panels.length - 1].route as string)
+    handleTabClick(panels[panels.length - 1])
   }
 }
 </script>
