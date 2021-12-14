@@ -1,10 +1,10 @@
 /*
  * @Author: MarioGo
  * @Date: 2021-12-09 14:09:24
- * @LastEditTime: 2021-12-10 16:57:57
+ * @LastEditTime: 2021-12-14 18:04:14
  * @LastEditors: MarioGo
  * @Description: 文件描述
- * @FilePath: /foxhis-Admin/src/router/index.ts
+ * @FilePath: /foxhis_admin/src/router/index.ts
  * 可以输入预定的版权声明、个性签名、空行等
  */
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
@@ -14,7 +14,7 @@ import Dashboard from '@views/dashboard/index.vue'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: 'home',
+    name: 'root',
     meta: {
       title: 'Dashboard',
     },
@@ -23,24 +23,24 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         name: 'dashboard',
-        path: '/dashboard',
+        path: 'dashboard',
         redirect: '/dashboard/console',
         meta: {
-          title: '控制台',
+          title: '主控台',
         },
         component: () => import('@/views/console/index.vue'),
       },
       {
         name: 'console',
-        path: '/dashboard/console',
+        path: 'dashboard/console',
         meta: {
-          title: '控制台',
+          title: '主控台',
         },
         component: () => import('@/views/console/index.vue'),
       },
       {
         name: 'workbench',
-        path: '/dashboard/workbench',
+        path: 'dashboard/workbench',
         meta: {
           title: '工作台',
         },
@@ -48,7 +48,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'about',
-        path: '/about', //默认缺省值
+        path: 'about', //默认缺省值
         meta: {
           title: '关于',
         },
@@ -56,7 +56,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: '403',
-        path: '/error/403', //默认缺省值
+        path: 'error/403', //默认缺省值
         meta: {
           title: '403页面',
         },
@@ -64,7 +64,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: '404',
-        path: '/error/404', //默认缺省值
+        path: 'error/404', //默认缺省值
         meta: {
           title: '404页面',
         },
@@ -72,7 +72,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: '500',
-        path: '/error/500', //默认缺省值
+        path: 'error/500', //默认缺省值
         meta: {
           title: '500页面',
         },

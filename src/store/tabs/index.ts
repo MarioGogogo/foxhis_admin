@@ -1,3 +1,12 @@
+/*
+ * @Author: MarioGo
+ * @Date: 2021-12-14 09:28:35
+ * @LastEditTime: 2021-12-14 16:10:30
+ * @LastEditors: MarioGo
+ * @Description: 文件描述
+ * @FilePath: /foxhis_admin/src/store/tabs/index.ts
+ * 可以输入预定的版权声明、个性签名、空行等
+ */
 import { defineStore } from 'pinia'
 import { useLocalStorage } from '@vueuse/core'
 const useTabsStore = defineStore({
@@ -5,7 +14,6 @@ const useTabsStore = defineStore({
   state: () => ({
     openTab: [],
     activeIndex: 'console',
-    activeMenu: { p: '', c: '' },
   }),
   // Pinia 中的 getter 与 Vuex 中的 getter 、组件中的计算属性具有相同的功能
   getters: {
@@ -21,9 +29,7 @@ const useTabsStore = defineStore({
         activeTab: this.getActiveIndex,
       })
     },
-    setActiveMenu(p, c) {
-      this.activeMenu = { p: p, c: c }
-    },
+
     deleteTabs(route: any) {
       let index = 0
       for (let gohh of this.openTab) {

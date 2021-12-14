@@ -1,5 +1,6 @@
 <template>
   <div class="layout-tabs flex items-center justify-between overflow-hidden">
+    <!-- 侧边栏logo -->
     <div class="w-32px h-32px flex justify-center items-center bg-white">
       <n-icon
         size="20"
@@ -9,7 +10,7 @@
         <ChevronBackCircleOutlineIcon />
       </n-icon>
     </div>
-
+    <!-- 侧边栏内容 -->
     <div class="tabs-scroll-middle overflow-x-scroll">
       <div
         v-for="(panel, index) in panelsRef"
@@ -29,7 +30,7 @@
           v-if="panel.label != 'console'"
           class="mr-8px"
           size="20"
-          @click="handleClose(index)"
+          @click="handleRmoveTab(index)"
         >
           <CloseOutlineIcon />
         </n-icon>
@@ -130,34 +131,15 @@ const onClickoutside = (e) => {
   showDropdownRef.value = false
 }
 
-const getRoutePathToState = (path) => {
-  if (path.indexOf('/') > -1) {
-    const arr = path.split('/')
-    tabsStore.setActiveMenu(arr[1], arr[2])
-    console.log(
-      '%c 🍝 arr: ',
-      'font-size:20px;background-color: #EA7E5C;color:#fff;',
-      arr
-    )
-  }
-}
-
 watch(
   [() => currentRoute.name, () => currentRoute.params],
   ([currRoute, currQuery], [fromRoute, oldQuery]) => {
-    console.log(
-      '%c 🍅 路由改变了要记录值了: ',
-      'font-size:20px;background-color: #ED9EC7;color:#fff;',
-      currentRoute
-    )
-    getRoutePathToState(currentRoute.path)
     //记录 acitve 值和改变 slide 侧边栏展开的默认值
     console.log(currRoute, '--', fromRoute)
     // console.log(currQuery, '********', oldQuery)
     findParentRouteName(currentRoute.path)
     //判断点击是tabs 有的标签则直接跳转刷新
     nameRef.value = currRoute as string
-
     //不存在 tabs 中 则增加 tabs 并路由跳转
     let flag = false
     for (let item of tabsStore.openTab) {
@@ -173,24 +155,29 @@ watch(
         label: currRoute,
       })
     }
-
-    console.log(
-      '%c 🍞 tabsStore.openTab: ',
-      'font-size:20px;background-color: #F5CE50;color:#fff;',
-      tabsStore.openTab
-    )
   }
 )
 // 点击 tabs
 const handleTabClick = (type) => {
-  router.push({ path: type.route })
+  console.log(
+    '%c 🥠 type: ',
+    'font-size:20px;background-color: #2EAFB0;color:#fff;',
+    type
+  )
+  router.push({ name: type.label })
 }
 // 关闭 tabs
-const handleClose = (index: number) => {
+const handleRmoveTab = (index: number) => {
+  console.log(
+    '%c 🍅 index: ',
+    'font-size:20px;background-color: #FCA650;color:#fff;',
+    index
+  )
   const { value: panels } = panelsRef
   if (panels.length === 1) return
   const name = panels[index].label
   const route = panels[index].route
+  //fix:删除之后没有及时跳转
   //全局状态删除
   tabsStore.deleteTabs(route)
   // panels.splice(index, 1)

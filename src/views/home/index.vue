@@ -1,10 +1,10 @@
 <!--
  * @Author: MarioGo
  * @Date: 2021-12-10 16:55:12
- * @LastEditTime: 2021-12-10 17:46:12
+ * @LastEditTime: 2021-12-14 17:45:43
  * @LastEditors: MarioGo
  * @Description: 文件描述
- * @FilePath: /foxhis-Admin/src/views/dashboard/index.vue
+ * @FilePath: /foxhis_admin/src/views/home/index.vue
  * 可以输入预定的版权声明、个性签名、空行等
 -->
 <template>
@@ -74,13 +74,7 @@ const inverted = ref(false)
 
 // 当前路由
 const currentRoute = useRoute()
-//当前点击的侧边栏标签 组件 vmodel 双向绑定
-const getCurrentSliderItem = computed(() => {
-  return {
-    label: '主控台',
-    key: ' console',
-  }
-})
+
 const tabsStore = useTabsStore()
 
 onMounted(() => {
